@@ -1,0 +1,11 @@
+{% load content_edit_tags %}
+{% load static %}
+<html>
+<script type="text/javascript" src='{% static 'content_edit/ckeditor/ckeditor.js' %}'></script>
+<script type="text/javascript" src='{% static 'content_edit/jquery/jquery.js' %}'></script>
+<script type="text/javascript" src='{% static 'content_edit/content_edit.js' %}'></script>
+<h1>Below is a content area to play with. Click it!</h1>
+  <div style="border: solid red;">
+    {% cms_content 'fun_content' %}
+  </div>
+</html>
