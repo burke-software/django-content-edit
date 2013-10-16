@@ -25,5 +25,5 @@ setup(
         'Intended Audience :: System Administrators',
         "License :: OSI Approved :: BSD License",
     ],
-    install_requires=['django', 'django-ckeditor']
+    install_requires=['django', 'django-ckeditor', 'django-reversion']
 )

@@ -11,6 +11,8 @@ just need a few editable areas in your templates.
 - Content can be reused on the same site with the same name. Content is unique per Site
 - Currently requires the Django Sites framework
 
+[![Build Status](https://travis-ci.org/burke-software/django-content-edit.png?branch=master)](https://travis-ci.org/burke-software/django-content-edit)
+
 ![ScreenShot](/images/screen.png)
 
 # Setup
