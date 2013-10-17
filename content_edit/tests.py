@@ -1,6 +1,8 @@
 from django.test import TestCase
+from django.template import Template, Context
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+#from django.contrib.content_type.models import ContentType
 from content_edit.models import CmsContent
 
 
@@ -32,3 +34,119 @@ class SimpleTest(TestCase):
         self.assertEqual(cms_content.content, test_content)
         response = self.client.get(reverse('sample_content_edit'))
         self.assertContains(response, test_content)
+
+
+class TemplateTagDefaultSettingsTests(TestCase):
+    def setUp(self):  
+        self.content1 = CmsContent(name='name1', content='content1',site_id=1)
+        self.content1.save()
+
+        self.admin_user = User.objects.create_user('admin', 'admin@gmail.com', 'temporary')
+        self.admin_user.is_staff = True
+        self.admin_user.save()
+
+        self.user_wo_perm = User.objects.create_user('user_wo_perm', 'admin@gmail.com', 'temporary')
+        self.user_wo_perm.save()
+
+        #content_type = ContentType.objects.get_for_model(CmsContent)
+
+        self.user_w_add_perm = User.objects.create_user('user_w_add_perm', 'admin@gmail.com', 'temporary')
+        self.user_w_add_perm.save()
+        #add_perm = Permission.objects.create(codename='content_edit_add_cmscontent',
+        #                               name='add',
+        #                               content_type=content_type)
+        #self.user_w_add_perm.user_permissions.add(add_perm)
+
+        self.user_w_change_perm = User.objects.create_user('user_w_change_perm', 'admin@gmail.com', 'temporary')
+        self.user_w_change_perm.save()
+        #change_perm = Permission.objects.create(codename='content_edit_change_cmscontent',
+        #                               name='change',
+        #                               content_type=content_type)
+        #self.user_w_change_perm.user_permissions.add(change_perm)
+
+    def test_existing_content_without_user(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name1' %}"
+        ).render(Context())
+        self.assertEqual(1, CmsContent.objects.count())
+        self.assertEqual(out,'content1')
+
+    def test_existing_content_for_user_without_perms(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name1' %}"
+        ).render(Context({'user':self.user_wo_perm}))
+        self.assertEqual(1, CmsContent.objects.count())
+        self.assertEqual(out,'content1')    
+
+    def test_existing_content_for_user_with_add_perm(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name1' %}"
+        ).render(Context({'user':self.user_w_add_perm}))
+        self.assertEqual(1, CmsContent.objects.count())
+        self.assertEqual(out,'content1')
+
+    def test_existing_content_for_user_with_change_perm(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name1' %}"
+        ).render(Context({'user':self.user_w_change_perm}))
+        self.assertEqual(1, CmsContent.objects.count())
+        self.assertEqual(out,'content1')
+
+    def test_existing_content_for_admin_user(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name1' %}"
+        ).render(Context({'user':self.admin_user}))
+        self.assertEqual(1, CmsContent.objects.count())
+        self.assertEqual(out,'<div id="content_name1" onblur="save_cms_content(this, \'name1\')" contenteditable="true">content1</div>')
+
+
+
+    def test_non_existing_content_without_user(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name2' %}"
+        ).render(Context())
+        self.assertEqual(2, CmsContent.objects.count())
+        self.assertEqual(out,'')
+        CmsContent.objects.exclude(name='name1').delete()
+
+    def test_non_existing_content_for_user_without_perms(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name2' %}"
+        ).render(Context({'user':self.user_wo_perm}))
+        self.assertEqual(2, CmsContent.objects.count())
+        self.assertEqual(out,'')   
+        CmsContent.objects.exclude(name='name1').delete()
+
+    def test_non_existing_content_for_user_with_add_perm(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name2' %}"
+        ).render(Context({'user':self.user_w_add_perm}))
+        self.assertEqual(2, CmsContent.objects.count())
+        self.assertEqual(out,'')
+        CmsContent.objects.exclude(name='name1').delete()
+
+    def test_non_existing_content_for_user_with_change_perm(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name2' %}"
+        ).render(Context({'user':self.user_w_change_perm}))
+        self.assertEqual(2, CmsContent.objects.count())
+        self.assertEqual(out,'')
+        CmsContent.objects.exclude(name='name1').delete()
+
+    def test_non_existing_content_for_admin_user(self):
+        out = Template(
+            "{% load content_edit_tags %}"
+            "{% cms_content 'name2' %}"
+        ).render(Context({'user':self.admin_user}))
+        self.assertEqual(2, CmsContent.objects.count())
+        self.assertEqual(out,'<div id="content_name2" onblur="save_cms_content(this, \'name2\')" contenteditable="true"></div>')
+        CmsContent.objects.exclude(name='name1').delete()
