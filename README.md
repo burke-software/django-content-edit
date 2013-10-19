@@ -31,3 +31,15 @@ just need a few editable areas in your templates.
 <script type="text/javascript" src='{% static 'content_edit/content_edit.js' %}'></script>
 ```
 
+# Settings
+
+The following app-specific settings are available to customize the bevhavior.
+
+- CONTENT_EDIT_AUTOCREATE
+Controls, whether a new content objects is created automatically, when the specific name is requested via the template tag, but no content object exists for that name; default: True
+
+- CONTENT_EDIT_CHECK_PERMS
+Controls, whether add and change permissions of the current user are checked in the template tag; default: False
+
+- CONTENT_EDIT_ADMIN_WYSIWYG
+Defines, how the content is repesented in the admin for editing. Either via a WYSIWIG editor or via a normal Textarea Widget; default: True
