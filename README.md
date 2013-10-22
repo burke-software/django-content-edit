@@ -9,7 +9,6 @@ just need a few editable areas in your templates.
 - Allow designers to insert staff editable content without learning a CMS or Django models
 - Logged in staff can edit content on the frontend with ckeditor inline. Admin view is optional!
 - Content can be reused on the same site with the same name. Content is unique per Site
-- Currently requires the Django Sites framework
 
 [![Build Status](https://travis-ci.org/burke-software/django-content-edit.png?branch=master)](https://travis-ci.org/burke-software/django-content-edit)
 
@@ -17,7 +16,7 @@ just need a few editable areas in your templates.
 
 # Setup
 
-1. pip install django-content-edit
+1. `pip install django-content-edit`
 1. Run `python manage.py syncdb --migrate` You can run without south's --migrate, but I don't suggest it.
 1. Add `'content_edit',` to INSTALLED_APPS
 1. Add `url(r'^content_edit/', include('content_edit.urls')),` to urls.py
@@ -29,5 +28,7 @@ just need a few editable areas in your templates.
 <script type="text/javascript" src='{% static 'ckeditor/ckeditor.js' %}'></script>
 <script type="text/javascript" src='{% static 'jquery/jquery.js' %}'></script>
 <script type="text/javascript" src='{% static 'content_edit/content_edit.js' %}'></script>
+...
+{% cms_content 'any_name_you_want' %}
 ```
 
