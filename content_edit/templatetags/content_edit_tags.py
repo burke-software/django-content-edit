@@ -1,6 +1,13 @@
 from django import template
-from django.contrib.sites.models import get_current_site
+try:
+    from django.contrib.sites.models import get_current_site
+    site = True
+except:
+    site = False
+
+
 from content_edit.models import CmsContent
+from content_edit.settings import *
 
 register = template.Library()
 
@@ -8,10 +15,40 @@ class CmsContentNode(template.Node):
     def __init__(self, content_name):
         self.content_name = content_name
     def render(self, context):
-        site = get_current_site(context['request'])
-        content = CmsContent.objects.get_or_create(
-            site=site, name=self.content_name)[0]
-        if context['request'].user.is_staff:
+        user = context.get('user', None)
+        request = context.get('request',None)
+        if not user and request:
+            user = getattr(request, 'user', None)
+        current_site=None
+
+        object_filter = {'name': self.content_name}
+
+        # Get current Site object (if used)
+        if site:
+            if request:
+                current_site = get_current_site(request)
+            if current_site:
+                object_filter['site'] = current_site
+            else:
+                object_filter['site_id'] = 1
+
+        # Get current content object
+        if AUTOCREATE and (not CHECK_PERMS or user.has_perm('content_edit_add_cmscontent')):
+            content = CmsContent.objects.get_or_create(**object_filter)[0]
+        else:
+            try:
+                content = CmsContent.objects.get(**object_filter)
+            except CmsContent.DoesNotExist:
+                content=''
+
+        # Check user Perms
+        change_perm = False
+        if user:
+            if (CHECK_PERMS and user.has_perm('content_edit_change_cmscontent')) or (not CHECK_PERMS and user.is_staff):
+                change_perm = True
+
+        # Generate content
+        if change_perm:
             html_content = '<div id="content_{0}" onblur="save_cms_content(this, \'{0}\')" contenteditable="true">{1}</div>'.format(
                 content.name, content.content)
         else:
