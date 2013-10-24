@@ -1,4 +1,5 @@
 from django import template
+from django.contrib.auth.models import AnonymousUser 
 try:
     from django.contrib.sites.models import get_current_site
     site = True
@@ -17,8 +18,11 @@ class CmsContentNode(template.Node):
     def render(self, context):
         user = context.get('user', None)
         request = context.get('request',None)
-        if not user and request:
-            user = getattr(request, 'user', None)
+        if not user:
+            if request:
+                user = getattr(request, 'user', None)
+            if not user:
+                user = AnonymousUser()
         current_site=None
 
         object_filter = {'name': self.content_name}
@@ -33,17 +37,17 @@ class CmsContentNode(template.Node):
                 object_filter['site_id'] = 1
 
         # Get current content object
-        if AUTOCREATE and (not CHECK_PERMS or user.has_perm('content_edit_add_cmscontent')):
+        if AUTOCREATE or (not CHECK_PERMS and user.is_staff) or (CHECK_PERMS and user.has_perm('content_edit_add_cmscontent')):
             content = CmsContent.objects.get_or_create(**object_filter)[0]
         else:
             try:
                 content = CmsContent.objects.get(**object_filter)
             except CmsContent.DoesNotExist:
-                content=''
+                content= CmsContent(content='')
 
         # Check user Perms
         change_perm = False
-        if user:
+        if user.is_authenticated():
             if (CHECK_PERMS and user.has_perm('content_edit_change_cmscontent')) or (not CHECK_PERMS and user.is_staff):
                 change_perm = True
 
