@@ -53,7 +53,7 @@ class CmsContentNode(template.Node):
 
         # Generate content
         if change_perm:
-            html_content = '<div id="content_{0}" onblur="save_cms_content(this, \'{0}\')" contenteditable="true">{1}</div>'.format(
+            html_content = u'<div id="content_{0}" onblur="save_cms_content(this, \'{0}\')" contenteditable="true">{1}</div>'.format(
                 content.name, content.content)
         else:
             html_content = content.content
