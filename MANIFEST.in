@@ -1,2 +1,2 @@
-recursive-include simple_import/templates *
-recursive-include simple_import/static *
+recursive-include content_edit/templates *
+recursive-include content_edit/static *
