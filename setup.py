@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "django-content-edit",
-    version = "1.4",
+    version = "1.5",
     author = "David Burke",
     author_email = "david@burkesoftware.com",
     description = ("A very simple way to let users edit content on the front end of a website."),
@@ -25,5 +25,5 @@ setup(
         'Intended Audience :: System Administrators',
         "License :: OSI Approved :: BSD License",
     ],
-    install_requires=['django', 'django-ckeditor', 'django-reversion']
+    install_requires=['django', 'django-ckeditor-updated', 'django-reversion']
 )
