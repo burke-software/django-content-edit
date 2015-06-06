@@ -12,10 +12,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     test_suite='setuptest.setuptest.SetupTestSuite',
-    tests_require=(
-        'django-setuptest',
-        'south',
-    ),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         'Environment :: Web Environment',
