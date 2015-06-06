@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "django-content-edit",
-    version = "1.6",
+    version = "1.7",
     author = "David Burke",
     author_email = "david@burkesoftware.com",
     description = ("A very simple way to let users edit content on the front end of a website."),
