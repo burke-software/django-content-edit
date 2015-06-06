@@ -11,7 +11,6 @@ setup(
     url = "https://github.com/burke-software/django-content-edit",
     packages=find_packages(),
     include_package_data=True,
-    test_suite='setuptest.setuptest.SetupTestSuite',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         'Environment :: Web Environment',
