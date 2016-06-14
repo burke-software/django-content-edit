@@ -11,5 +11,4 @@ COPY . /usr/src/app
 # include RUN for tests as well as CMD so that all test dependencies are
 # installed on the image and wont have to be downloaded again every time
 # the image is RUN
-RUN python setup.py test
-CMD python setup.py test
+CMD python manage.py test
