@@ -16,6 +16,8 @@ just need a few editable areas in your templates.
 
 # Setup
 
+This currently support Django 1.9 and Python 3.5.
+
 1. `pip install django-content-edit`
 1. Run `python manage.py syncdb --migrate` You can run without south's --migrate, but I don't suggest it.
 1. Add `'content_edit',` to INSTALLED_APPS

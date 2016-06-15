@@ -1,7 +1,7 @@
 from django import template
-from django.contrib.auth.models import AnonymousUser 
+from django.contrib.auth.models import AnonymousUser
 try:
-    from django.contrib.sites.models import get_current_site
+    from django.contrib.sites.shortcuts import get_current_site
     site = True
 except:
     site = False
@@ -74,4 +74,3 @@ def do_cms_content(parser, token):
             raise template.TemplateSyntaxError(
                 "%r tag's argument should be in quotes" % tag_name)
     return CmsContentNode(content_name[1:-1])
-
